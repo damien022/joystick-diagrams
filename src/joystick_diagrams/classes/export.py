@@ -3,14 +3,15 @@ import os
 from pathlib import Path
 import re
 import html
+import subprocess
 import logging
 from PyQt5 import QtWidgets
 from joystick_diagrams import config
 from joystick_diagrams.functions import helper
-from cairosvg import svg2png
 
 _logger = logging.getLogger(__name__)
 
+IMAGIK_PROGRAM="C:\\Program Files\\ImageMagick-7.1.0-Q16-HDRI\\magick.exe"
 
 class Export:
     def __init__(self, joystick_listing, parser_id="UNKNOWN", 
@@ -100,7 +101,10 @@ class Export:
             if (output_png):
                 helper.create_directory(png_output_directory)
                 print("Exporting png to {}".format(output_png))
-                svg2png(bytestring=template,write_to=output_png)
+                subprocess.run([IMAGIK_PROGRAM, output_path, output_png])
+                # drawing = svg2rlg(output_path)
+                # renderPM.drawToFile(drawing, output_png, fmt='PNG')
+                # svg2png(bytestring=template,write_to=output_png)
             
         except PermissionError as e:
             _logger.error(e)

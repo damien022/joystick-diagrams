@@ -2,6 +2,7 @@ from cmath import exp
 import sys
 import os
 import logging
+
 from pathlib import Path
 from PyQt5 import QtWidgets, QtGui, QtCore
 from joystick_diagrams.ui import Ui_MainWindow

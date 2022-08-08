@@ -1,4 +1,5 @@
 """DCS World Lua Config Parser for use with Joystick Diagrams"""
+from distutils.command.build import build
 import os
 import re
 from pathlib import Path
@@ -113,7 +114,7 @@ class DCSWorldParser(jdi.JDinterface):
             for item in self.profile_devices:
                 self.joystick_listing.update({item[:-48]: item})
             for joystick_device, joystick_file in self.joystick_listing.items():
-
+                print(f"Joystick Device: {joystick_device} File {joystick_file}")
                 if os.path.isdir(os.path.join(self.fq_path, joystick_file)):
                     print("Skipping as Folder")
                 else:
@@ -138,7 +139,8 @@ class DCSWorldParser(jdi.JDinterface):
     def create_joystick_map(self, data) -> dict:
         write_val = False
         button_array = {}
-
+        if data is None:
+            return button_array
         if "keyDiffs" in data.keys():
             for value in data["keyDiffs"].values():
                 for item, attribute in value.items():
