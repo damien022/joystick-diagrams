@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 
 
 class DCSWorldParser(jdi.JDinterface):
-    def __init__(self, path, easy_modes=True):
+    def __init__(self, path, easy_modes=True, generate_png=True, generate_kneeboard=True):
         jdi.JDinterface.__init__(self)
         self.path = path
         self.remove_easy_modes = easy_modes
@@ -24,6 +24,8 @@ class DCSWorldParser(jdi.JDinterface):
         self.profiles_to_process = None
         self.profile_devices = None
         self.fq_path = None
+        self.generate_png = generate_png
+        self.generate_kneeboard = generate_kneeboard
 
     def __validate_base_directory(self):
         """validate the base directory structure, make sure there are files."""
@@ -77,9 +79,12 @@ class DCSWorldParser(jdi.JDinterface):
         return self.valid_profiles
 
     def convert_button_format(self, button) -> str:
-        """Convert DCS Buttons to match expected "BUTTON_X" format"""
+        """Convert DCS Buttons to match expected "BUTTON_X" format
+        Also converts the axis format from JOY_ to AXIS_
+        """
         split = button.split("_")
 
+        # print("Processing {}".format(split))
         if len(split) == 2:
             if split[1][0:3] == "BTN":
                 return split[1].replace("BTN", "BUTTON_")

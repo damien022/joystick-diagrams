@@ -1,3 +1,4 @@
+from cmath import exp
 import sys
 import os
 import logging
@@ -32,6 +33,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # Refactor pylint: disa
         self.jg_devices = None
         self.jg_modes = None
         self.dcs_easy_mode_checkbox.stateChanged.connect(self.easy_mode_checkbox_action)
+        self.dcs_generate_png.stateChanged.connect(self.generate_png_action)
+        self.dcs_generate_kneeboard.stateChanged.connect(self.generate_kneeboard_action)
         self.dcs_directory_select_button.clicked.connect(self.set_dcs_directory)
         self.export_button.clicked.connect(self.export_profiles)
         self.parser_selector.currentChanged.connect(self.change_export_button)
@@ -96,6 +99,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # Refactor pylint: disa
             self.dcs_parser_instance.remove_easy_modes = self.dcs_easy_mode_checkbox.isChecked()
             self.dcs_profiles_list.clear()
             self.dcs_profiles_list.addItems(self.dcs_parser_instance.get_validated_profiles())
+
+    def generate_kneeboard_action(self) -> None:
+        """
+        DCS World, will generate a png of the layout
+        """
+        if self.dcs_parser_instance:
+            self.dcs_parser_instance.generate_kneeboard = self.dcs_generate_kneeboard.isChecked()
+
+    def generate_png_action(self) -> None:
+        """
+        DCS World, will generate the png into the kneeboard folder
+        """
+        if self.dcs_parser_instance:
+            self.dcs_parser_instance.generate_png = self.dcs_generate_png.isChecked()
 
     def clear_info(self) -> None:
         """
@@ -265,7 +282,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # Refactor pylint: disa
         self.export_progress_bar.setValue(0)
         self.clear_info()
         self.print_to_info("Export Started")
-        exporter = export.Export(data, parser_type)
+        
+        exporter = export.Export(data, parser_type, 
+                                 output_directory=self.dcs_directory + "/kneeboard/" if self.dcs_generate_kneeboard else None, 
+                                 export_to_png=self.dcs_generate_png)
         success = exporter.export_config(self.export_progress_bar)
         for item in success:
             self.print_to_info(item)

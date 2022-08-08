@@ -478,6 +478,19 @@ class Ui_MainWindow(object):
         self.dcs_easy_mode_checkbox.setStyleSheet("color: white")
         self.dcs_easy_mode_checkbox.setChecked(True)
         self.dcs_easy_mode_checkbox.setObjectName("dcs_easy_mode_checkbox")
+        
+        self.dcs_generate_png = QtWidgets.QCheckBox(self.dcs_tab)
+        self.dcs_generate_png.setGeometry(QtCore.QRect(390, 190, 351, 20))
+        self.dcs_generate_png.setStyleSheet("color: white")
+        self.dcs_generate_png.setChecked(True)
+        self.dcs_generate_png.setObjectName("dcs_generate_png")
+
+        self.dcs_generate_kneeboard = QtWidgets.QCheckBox(self.dcs_tab)
+        self.dcs_generate_kneeboard.setGeometry(QtCore.QRect(390, 220, 351, 20))
+        self.dcs_generate_kneeboard.setStyleSheet("color: white")
+        self.dcs_generate_kneeboard.setChecked(True)
+        self.dcs_generate_kneeboard.setObjectName("dcs_generate_kneeboard")
+        
         self.dcs_selected_directory_label = QtWidgets.QLabel(self.dcs_tab)
         self.dcs_selected_directory_label.setGeometry(QtCore.QRect(20, 150, 261, 20))
         self.dcs_selected_directory_label.setStyleSheet("font-size: 11px;\n" "color:white;")
@@ -674,6 +687,10 @@ class Ui_MainWindow(object):
         self.label_7.setText(_translate("MainWindow", "Available DCS Profiles"))
         self.dcs_easy_mode_checkbox.setText(_translate("MainWindow", 'Exclude "Easy" Mode Profiles'))
         self.dcs_selected_directory_label.setText(_translate("MainWindow", "c:test"))
+        
+        self.dcs_generate_png.setText(_translate("MainWindow", 'Generate PNG'))
+        self.dcs_generate_kneeboard.setText(_translate("MainWindow", 'Generate Kneeboards'))
+        
         self.label_10.setText(_translate("MainWindow", "Settings"))
         self.parser_selector.setTabText(
             self.parser_selector.indexOf(self.dcs_tab),

@@ -7,12 +7,16 @@ import logging
 from PyQt5 import QtWidgets
 from joystick_diagrams import config
 from joystick_diagrams.functions import helper
+from cairosvg import svg2png
 
 _logger = logging.getLogger(__name__)
 
 
 class Export:
-    def __init__(self, joystick_listing, parser_id="UNKNOWN"):  # pylint disable=too-many-instance-attributes
+    def __init__(self, joystick_listing, parser_id="UNKNOWN", 
+                 export_to_png=False, 
+                 output_directory=None,
+                 mode_export=True):  # pylint disable=too-many-instance-attributes
         self.export_directory = "./diagrams/"
         self.templates_directory = "./templates/"
         self.file_name_divider = "_"
@@ -20,6 +24,9 @@ class Export:
         self.export_progress = None
         self.no_bind_text = config.noBindText
         self.executor = parser_id
+        self.export_to_png = export_to_png
+        self.output_directory = output_directory
+        self.mode_export=mode_export
         self.error_bucket = []
 
     def export_config(self, progress_bar=None) -> list:
@@ -73,16 +80,33 @@ class Export:
 
     def save_template(self, joystick, mode, template):
         output_path = self.export_directory + self.executor + "_" + joystick.strip() + "_" + mode + ".svg"
-
+        
+        # create the output png
+        png_output_directory = self.export_directory
+        if self.output_directory:
+            png_output_directory = self.output_directory
+        if self.mode_export:
+            png_output_directory += mode + "/"
+            
+        output_png = png_output_directory + self.executor + "_" + mode + "_" + joystick.strip()  + ".png"
         helper.create_directory(self.export_directory)
 
         try:
+            print("Exporting svg to {}".format(output_path))
             outputfile = open(output_path, "w", encoding="UTF-8")
             outputfile.write(template)
             outputfile.close()
+            # convert to png
+            if (output_png):
+                helper.create_directory(png_output_directory)
+                print("Exporting png to {}".format(output_png))
+                svg2png(bytestring=template,write_to=output_png)
+            
         except PermissionError as e:
             _logger.error(e)
             raise
+        
+        print("Done")
 
     def replace_unused_strings(self, template):
         regex_search = "\\bButton_\\d+\\b|\\bPOV_\\d+_\\w+\\b"
